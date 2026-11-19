@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZEVORA — Create Without Limits</title>
+<style>
+:root{--navy:#10182f;--navy2:#182444;--gold:#d8b45b;--purple:#7655c8;--ink:#172033;--muted:#718096;--line:#e7eaf1;--paper:#f5f6fa}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Noto Sans Malayalam","Noto Sans Arabic",sans-serif;color:var(--ink);background:var(--paper)}
+button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 13px;background:#edf0f7;color:#1b2540;font-weight:650}button:hover{filter:brightness(.97)}button.primary{background:var(--gold);color:#171b2c}button.dark{background:var(--navy);color:white}button.active{background:#eee7ff;color:#5537a4;outline:1px solid #c7b5f4}
+.top{height:66px;background:var(--navy);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:12px;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:850;letter-spacing:2px}.brand img{width:38px;height:38px;object-fit:contain;border-radius:9px}.tag{font-size:10px;color:var(--gold);letter-spacing:2px}
+.top-actions{display:flex;gap:8px;align-items:center}.top .ghost{background:#273252;color:white}.top .primary{background:var(--gold)}
+.app{display:grid;grid-template-columns:240px minmax(300px,1fr);min-height:calc(100vh - 66px)}
+.sidebar{background:white;border-right:1px solid var(--line);padding:18px 14px;overflow:auto}.side-title{font-size:11px;font-weight:800;color:#98a1b3;letter-spacing:1.4px;margin:14px 8px 8px}.navbtn{width:100%;display:flex;gap:10px;align-items:center;text-align:left;background:transparent;margin:3px 0;padding:11px 12px;color:#4b5870}.navbtn.active{background:#f0ebff;color:#5537a4}.navbtn span{font-size:18px;width:23px;text-align:center}
+.main{padding:22px;min-width:0}.welcome{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:20px}.welcome h1{font-size:27px;margin:0 0 5px;color:var(--navy)}.welcome p{margin:0;color:var(--muted)}
+.templates{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:14px}.template{background:white;border:1px solid var(--line);border-radius:15px;padding:12px;text-align:left;box-shadow:0 4px 14px #15203b08}.template .thumb{height:120px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:20px;letter-spacing:1px;margin-bottom:10px;text-align:center;padding:10px}.template b{display:block}.template small{color:var(--muted)}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:25px 0 12px}.section-head h2{font-size:17px;margin:0}
+.editor{display:none;grid-template-columns:250px minmax(280px,1fr) 230px;gap:14px;height:calc(100vh - 112px);min-height:570px}
+.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:14px;overflow:auto}.panel h3{font-size:14px;margin:0 0 12px}.toolgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toolgrid button{min-height:60px;background:#f6f7fb}.field{margin:11px 0}.field label{display:block;font-size:11px;font-weight:750;color:#6b7588;margin-bottom:6px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px;background:white;color:#202b43}.stagewrap{display:flex;flex-direction:column;min-width:0;gap:10px}.stagebar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.stagebar .group{display:flex;gap:6px;flex-wrap:wrap}.stage{flex:1;min-height:0;background:#e8eaf0;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+canvas{background:white;box-shadow:0 8px 30px #1c294022;max-width:100%;max-height:100%;object-fit:contain;touch-action:manipulation}
+.layer{padding:9px;border:1px solid var(--line);border-radius:8px;margin:6px 0;display:flex;justify-content:space-between;gap:6px;font-size:12px;cursor:pointer}.layer.selected{border-color:var(--purple);background:#f4f0ff}.hint{font-size:11px;color:var(--muted);line-height:1.5}.mobilebar{display:none}
+.modalback{position:fixed;inset:0;background:#0b1228a8;display:none;align-items:center;justify-content:center;z-index:30;padding:16px}.modal{background:white;border-radius:16px;padding:22px;max-width:520px;width:100%}.modal h2{margin-top:0}.modal input{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin:6px 0 12px}
+@media(max-width:1050px){.editor{grid-template-columns:210px minmax(250px,1fr)}.rightpanel{display:none}.templates{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.top{padding:0 12px}.top .tag{display:none}.app{grid-template-columns:1fr}.sidebar{display:flex;gap:5px;padding:8px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}.side-title{display:none}.navbtn{width:auto;white-space:nowrap;margin:0;padding:9px}.navbtn span{display:none}.main{padding:12px}.welcome{align-items:start;flex-direction:column}.editor{height:auto;min-height:0;grid-template-columns:1fr}.leftpanel{order:2}.stagewrap{order:1;min-height:460px}.rightpanel{display:block;order:3}.stage{min-height:390px;padding:8px}.stage canvas{max-height:440px}.templates{grid-template-columns:repeat(2,minmax(0,1fr))}.top-actions button{padding:8px;font-size:12px}}
+</style></head>
+<body>
+<header class="top">
+ <div class="brand"><img id="brandLogo" src="zevora-logo.png" onerror="this.style.display='none'"><div>ZEVORA<div class="tag">CREATE WITHOUT LIMITS</div></div></div>
+ <div class="top-actions"><button class="ghost" onclick="showHome()">Home</button><button class="ghost" onclick="newBlank()">＋ Blank</button><button class="primary" onclick="exportPNG()">Export PNG</button></div>
+</header>
+<div class="app">
+<aside class="sidebar">
+ <div class="side-title">CREATE</div>
+ <button class="navbtn active" data-page="home" onclick="showHome()"><span>⌂</span> Home</button>
+ <button class="navbtn" onclick="openTemplate('Poster')"><span>▣</span> Poster Maker</button>
+ <button class="navbtn" onclick="openTemplate('Banner')"><span>▰</span> Banner Maker</button>
+ <button class="navbtn" onclick="openTemplate('Logo')"><span>✦</span> Logo Maker</button>
+ <button class="navbtn" onclick="openTemplate('Thumbnail')"><span>▶</span> Thumbnail Maker</button>
+ <button class="navbtn" onclick="openTemplate('Social Post')"><span>▧</span> Social Media</button>
+ <div class="side-title">YOUR WORKSPACE</div>
+ <button class="navbtn" onclick="showSaved()"><span>▤</span> Saved designs</button>
+ <button class="navbtn" onclick="openFonts()"><span>अ</span> Font Studio</button>
+</aside>
+<main class="main">
+ <section id="homePage">
+  <div class="welcome"><div><h1>What will you create today?</h1><p>Design posters, banners, logos and more — in Malayalam, Arabic and English.</p></div><button class="dark" onclick="newBlank()">＋ Create a design</button></div>
+  <div class="section-head"><h2>Start with a design type</h2><span class="hint">Choose a canvas to begin</span></div>
+  <div class="templates">
+   <button class="template" onclick="openTemplate('Poster')"><div class="thumb" style="background:linear-gradient(145deg,#14213d,#7655c8)">EVENT<br>POSTER</div><b>Poster Maker</b><small>Events · Festivals · Announcements</small></button>
+   <button class="template" onclick="openTemplate('Banner')"><div class="thumb" style="background:linear-gradient(120deg,#0e203a,#d4ad54)">YOUR<br>BANNER</div><b>Banner Maker</b><small>Flex · Shop · Stage · Web</small></button>
+   <button class="template" onclick="openTemplate('Logo')"><div class="thumb" style="background:#121a32;color:#e2c36d">✦ Z</div><b>Logo Maker</b><small>Brand · Symbol · Wordmark</small></button>
+   <button class="template" onclick="openTemplate('Thumbnail')"><div class="thumb" style="background:linear-gradient(135deg,#4d247e,#e15c74)">VIDEO<br>THUMBNAIL</div><b>Thumbnail Maker</b><small>YouTube · Video covers</small></button>
+   <button class="template" onclick="openTemplate('Social Post')"><div class="thumb" style="background:linear-gradient(135deg,#087e8b,#172a45)">SOCIAL<br>POST</div><b>Social Media</b><small>Posts · Stories</small></button>
+   <button class="template" onclick="newBlank()"><div class="thumb" style="background:#edf0f7;color:#39435a">＋</div><b>Blank Canvas</b><small>Start from scratch</small></button>
+  </div>
+  <div class="section-head"><h2>Included in the studio</h2></div>
+  <div class="templates">
+   <div class="template"><b>✎ Text & Fonts</b><small>Malayalam, Arabic and English text tools</small></div>
+   <div class="template"><b>◇ Shapes & Elements</b><small>Lines, circles, stars and decorative shapes</small></div>
+   <div class="template"><b>▧ Photo Upload</b><small>Add your own pictures to the design</small></div>
+   <div class="template"><b>⇩ PNG Export</b><small>Export the current canvas as an image</small></div>
+  </div>
+ </section>
+ <section id="editorPage" class="editor">
+  <div class="panel leftpanel">
+   <h3>Design tools</h3>
+   <div class="toolgrid">
+    <button onclick="addText()">＋ Add text</button><button onclick="document.getElementById('photoInput').click()">▧ Add photo</button>
+    <button onclick="addShape('rect')">▭ Rectangle</button><button onclick="addShape('circle')">◯ Circle</button>
+    <button onclick="addShape('line')">／ Line</button><button onclick="addShape('star')">☆ Star</button>
+    <button onclick="addShape('triangle')">△ Triangle</button><button onclick="addShape('badge')">✦ Badge</button>
+   </div>
+   <input id="photoInput" type="file" accept="image/*" hidden onchange="uploadPhoto(event)">
+   <div class="field"><label>QUICK TEXT</label><input id="quickText" placeholder="Type Malayalam / Arabic / English"></div>
+   <button class="primary" style="width:100%" onclick="addText(document.getElementById('quickText').value)">Add text to canvas</button>
+   <div class="field"><label>CANVAS SIZE</label><select id="sizeSelect" onchange="changeSize(this.value)"><option value="poster">Poster · 1080×1350</option><option value="square">Square · 1080×1080</option><option value="story">Story · 1080×1920</option><option value="banner">Banner · 1600×600</option><option value="thumb">Thumbnail · 1280×720</option><option value="logo">Logo · 1000×1000</option></select></div>
+   <p class="hint">Tip: Select an object on the canvas or in Layers to edit it. Drag objects to reposition them.</p>
+  </div>
+  <div class="stagewrap">
+   <div class="stagebar"><div class="group"><button onclick="undo()">↶ Undo</button><button onclick="redo()">↷ Redo</button><button onclick="deleteSelected()">Delete</button></div><div class="group"><button onclick="saveDesign()">Save</button><button class="primary" onclick="exportPNG()">Export PNG</button></div></div>
+   <div class="stage"><canvas id="canvas" width="1080" height="1350"></canvas></div>
+   <div class="hint" id="status">Ready · Select an element to edit</div>
+  </div>
+  <div class="panel rightpanel">
+   <h3>Properties</h3>
+   <div class="field"><label>TEXT / CONTENT</label><input id="propText" oninput="updateSelected('text',this.value)" placeholder="Selected text"></div>
+   <div class="field"><label>FONT</label><select id="propFont" onchange="updateSelected('font',this.value)"><option>Arial</option><option>Georgia</option><option>Times New Roman</option><option>Verdana</option><option>Tahoma</option><option>serif</option><option>sans-serif</option></select></div>
+   <div class="field"><label>FONT SIZE</label><input id="propSize" type="number" min="8" max="240" value="64" onchange="updateSelected('size',+this.value)"></div>
+   <div class="field"><label>COLOR</label><input id="propColor" type="color" value="#172033" onchange="updateSelected('color',this.value)"></div>
+   <div class="field"><label>BACKGROUND</label><input id="bgColor" type="color" value="#ffffff" onchange="setBackground(this.value)"></div>
+   <div class="field"><label>ROTATION (DEGREES)</label><input id="propRotate" type="number" value="0" onchange="updateSelected('rotate',+this.value)"></div>
+   <div class="field"><label>OPACITY</label><input id="propOpacity" type="range" min="0.1" max="1" step="0.05" value="1" oninput="updateSelected('opacity',+this.value)"></div>
+   <h3 style="margin-top:20px">Layers</h3><div id="layers"></div>
+   <p class="hint">Use the layer list to select objects. More advanced features such as cloud sync, collaborative editing and vector import can be added in a production release.</p>
+  </div>
+ </section>
+ <section id="savedPage" style="display:none"><div class="welcome"><div><h1>Saved designs</h1><p>Your designs saved on this device.</p></div><button onclick="showHome()">Back to home</button></div><div id="savedList"></div></section>
+ <section id="fontsPage" style="display:none"><div class="welcome"><div><h1>Multilingual Font Studio</h1><p>Preview text in Malayalam, Arabic and English.</p></div></div><div class="panel"><div class="field"><label>YOUR TEXT</label><input id="fontPreviewText" value="സൃഷ്ടിക്കുക · إبداع · Create"></div><div class="field"><label>LANGUAGE</label><select id="fontLang"><option>Malayalam</option><option>Arabic</option><option>English</option></select></div><div id="fontPreview" style="font-size:34px;padding:24px;background:#f5f6fa;border-radius:12px">സൃഷ്ടിക്കുക · إبداع · Create</div><p class="hint">This preview uses fonts available on the device. Add licensed font files to the production build for a complete bundled font library.</p></div></section>
+</main></div>
+<div class="modalback" id="textModal"><div class="modal"><h2>Add text</h2><label>Text content</label><input id="modalText" placeholder="Enter text in any language"><div style="display:flex;gap:8px;justify-content:flex-end"><button onclick="closeTextModal()">Cancel</button><button class="primary" onclick="confirmText()">Add to design</button></div></div></div>
+<script>
+const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
+let objects=[],selected=-1,history=[],future=[],bg='#ffffff',drag=null,designName='Untitled design';
+function snapshot(){history.push(JSON.stringify({objects,bg}));if(history.length>40)history.shift();future=[]}
+function restore(s){let x=JSON.parse(s);objects=x.objects;bg=x.bg;selected=-1;render()}
+function undo(){if(!history.length)return;future.push(JSON.stringify({objects,bg}));restore(history.pop())}
+function redo(){if(!future.length)return;history.push(JSON.stringify({objects,bg}));restore(future.pop())}
+function showHome(){['homePage','editorPage','savedPage','fontsPage'].forEach(x=>$(x).style.display=x==='homePage'?'block':'none')}
+function showSaved(){['homePage','editorPage','savedPage','fontsPage'].forEach(x=>$(x).style.display=x==='savedPage'?'block':'none');renderSaved()}
+function openFonts(){['homePage','editorPage','savedPage','fontsPage'].forEach(x=>$(x).style.display=x==='fontsPage'?'block':'none')}
+$('fontPreviewText').addEventListener('input',e=>$('fontPreview').textContent=e.target.value);
+$('fontLang').addEventListener('change',e=>{$('fontPreview').dir=e.target.value==='Arabic'?'rtl':'auto';$('fontPreview').style.fontFamily=e.target.value==='Arabic'?'Tahoma,serif':'system-ui'});
+function showEditor(){ $('homePage').style.display='none';$('savedPage').style.display='none';$('fontsPage').style.display='none';$('editorPage').style.display='grid';render() }
+function openTemplate(type){snapshot();objects=[];bg='#ffffff';let sizes={Poster:[1080,1350,'poster'],Banner:[1600,600,'banner'],Logo:[1000,1000,'logo'],Thumbnail:[1280,720,'thumb'],'Social Post':[1080,1080,'square']};let s=sizes[type]||sizes.Poster;canvas.width=s[0];canvas.height=s[1];$('sizeSelect').value=s[2];designName=type+' design';if(type==='Poster'){bg='#111a35';objects=[txt(type.toUpperCase(),540,390,90,'#e5c36d','Arial','center'),txt('Your event title',540,570,78,'#ffffff','Arial','center'),txt('Date  ·  Time  ·  Venue',540,700,38,'#e6e8ef','Arial','center')]}else if(type==='Banner'){bg='#14213d';objects=[txt('YOUR BRAND NAME',800,250,100,'#e6c36b','Arial','center'),txt('A message that matters',800,370,52,'#ffffff','Arial','center')]}else if(type==='Logo'){bg='#10182f';objects=[txt('✦',500,440,260,'#d8b45b','Arial','center'),txt('YOUR BRAND',500,630,80,'#ffffff','Georgia','center')]}else if(type==='Thumbnail'){bg='#4b267b';objects=[txt('YOUR VIDEO TITLE',640,300,100,'#ffffff','Arial','center'),txt('WATCH NOW',640,500,54,'#ffd76e','Arial','center')]}else{bg='#0c777e';objects=[txt('YOUR MESSAGE',540,470,88,'#ffffff','Arial','center'),txt('@yourpage',540,590,40,'#f5dc9a','Arial','center')]}render();showEditor()}
+function newBlank(){snapshot();objects=[];bg='#ffffff';canvas.width=1080;canvas.height=1080;$('sizeSelect').value='square';designName='Untitled design';showEditor()}
+function txt(text,x,y,size,color,font,align){return {type:'text',text,x,y,size,color,font,align:align||'left',rotate:0,opacity:1}}
+function addText(v){let value=v||$('quickText').value;if(!value){$('textModal').style.display='flex';return}snapshot();objects.push(txt(value,canvas.width/2,canvas.height/2,64,'#172033','Arial','center'));selected=objects.length-1;render();$('quickText').value=''}
+function closeTextModal(){$('textModal').style.display='none'}
+function confirmText(){let v=$('modalText').value;if(v)addText(v);$('modalText').value='';closeTextModal()}
+function addShape(type){snapshot();objects.push({type,x:canvas.width/2,y:canvas.height/2,w:260,h:180,color:'#d8b45b',rotate:0,opacity:1});selected=objects.length-1;render()}
+function uploadPhoto(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f),im=new Image();im.onload=()=>{snapshot();objects.push({type:'image',img:url,x:canvas.width/2,y:canvas.height/2,w:Math.min(im.width,500),h:Math.min(im.height,500),rotate:0,opacity:1});selected=objects.length-1;render()};im.src=url;e.target.value=''}
+function setBackground(c){snapshot();bg=c;render()}
+function updateSelected(k,v){if(selected<0||!objects[selected])return;snapshot();objects[selected][k]=v;render()}
+function deleteSelected(){if(selected<0)return;snapshot();objects.splice(selected,1);selected=-1;render()}
+function changeSize(v){let map={poster:[1080,1350],square:[1080,1080],story:[1080,1920],banner:[1600,600],thumb:[1280,720],logo:[1000,1000]};snapshot();canvas.width=map[v][0];canvas.height=map[v][1];render()}
+function render(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);objects.forEach((o,i)=>{ctx.save();ctx.globalAlpha=o.opacity??1;ctx.translate(o.x,o.y);ctx.rotate((o.rotate||0)*Math.PI/180);if(o.type==='text'){ctx.fillStyle=o.color;ctx.textAlign=o.align||'left';ctx.textBaseline='middle';ctx.font=`${o.size}px "${o.font||'Arial'}"`;wrapText(o.text,0,0,canvas.width*.85,o.size*1.2)}else if(o.type==='image'){let im=new Image();im.src=o.img;if(im.complete)ctx.drawImage(im,-o.w/2,-o.h/2,o.w,o.h);else im.onload=()=>render()}else{ctx.fillStyle=o.color;ctx.strokeStyle=o.color;ctx.lineWidth=8;if(o.type==='rect')ctx.fillRect(-o.w/2,-o.h/2,o.w,o.h);if(o.type==='circle'){ctx.beginPath();ctx.ellipse(0,0,o.w/2,o.h/2,0,0,Math.PI*2);ctx.fill()}if(o.type==='line'){ctx.beginPath();ctx.moveTo(-o.w/2,0);ctx.lineTo(o.w/2,0);ctx.stroke()}if(o.type==='triangle'){ctx.beginPath();ctx.moveTo(0,-o.h/2);ctx.lineTo(o.w/2,o.h/2);ctx.lineTo(-o.w/2,o.h/2);ctx.closePath();ctx.fill()}if(o.type==='star'||o.type==='badge'){let n=o.type==='star'?5:8;ctx.beginPath();for(let j=0;j<n*2;j++){let r=j%2?o.w*.22:o.w*.5,a=j*Math.PI/n-Math.PI/2;let x=Math.cos(a)*r,y=Math.sin(a)*r;j?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath();ctx.fill()}}ctx.restore()});drawSelection();renderLayers();syncProps()}
+function wrapText(text,x,y,maxWidth,lineHeight){let words=String(text||'').split(' '),line='',lines=[];for(let n=0;n<words.length;n++){let test=line+words[n]+' ';if(ctx.measureText(test).width>maxWidth&&n>0){lines.push(line);line=words[n]+' '}else line=test}lines.push(line);lines.forEach((l,i)=>ctx.fillText(l,x,y-(lines.length-1)*lineHeight/2+i*lineHeight))}
+function drawSelection(){if(selected<0||!objects[selected])return;let o=objects[selected];ctx.save();ctx.translate(o.x,o.y);ctx.rotate((o.rotate||0)*Math.PI/180);ctx.strokeStyle='#7655c8';ctx.lineWidth=4;ctx.setLineDash([12,8]);let w=o.type==='text'?Math.max(180,(o.size||60)*String(o.text).length*.55):o.w||200,h=o.type==='text'?(o.size||60)*1.6:o.h||120;ctx.strokeRect(-w/2,-h/2,w,h);ctx.restore()}
+function renderLayers(){$('layers').innerHTML='';objects.forEach((o,i)=>{let d=document.createElement('div');d.className='layer'+(i===selected?' selected':'');d.textContent=(o.type==='text'?(o.text||'Text').slice(0,22):o.type.toUpperCase())+'  ·  '+(i+1);d.onclick=()=>{selected=i;render()};$('layers').appendChild(d)})}
+function syncProps(){let o=objects[selected];$('propText').value=o?.text||'';$('propSize').value=o?.size||64;$('propColor').value=o?.color||'#172033';$('propFont').value=o?.font||'Arial';$('propRotate').value=o?.rotate||0;$('propOpacity').value=o?.opacity??1;$('bgColor').value=bg}
+function canvasPoint(e){let r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}
+function hit(p,o){let w=o.type==='text'?Math.max(160,(o.size||60)*String(o.text).length*.5):o.w||180,h=o.type==='text'?(o.size||60)*1.6:o.h||120;return Math.abs(p.x-o.x)<w/2&&Math.abs(p.y-o.y)<h/2}
+canvas.addEventListener('pointerdown',e=>{let p=canvasPoint(e);for(let i=objects.length-1;i>=0;i--)if(hit(p,objects[i])){selected=i;drag={x:p.x-objects[i].x,y:p.y-objects[i].y};canvas.setPointerCapture(e.pointerId);render();return}selected=-1;render()});
+canvas.addEventListener('pointermove',e=>{if(!drag||selected<0)return;let p=canvasPoint(e);objects[selected].x=p.x-drag.x;objects[selected].y=p.y-drag.y;render()});
+canvas.addEventListener('pointerup',()=>{if(drag)snapshot();drag=null});
+function saveDesign(){let data={name:designName,objects,bg,w:canvas.width,h:canvas.height,preview:canvas.toDataURL('image/png')};let a=JSON.parse(localStorage.getItem('zevoraDesigns')||'[]');a.unshift(data);localStorage.setItem('zevoraDesigns',JSON.stringify(a.slice(0,30)));$('status').textContent='Saved on this device.'}
+function renderSaved(){let a=JSON.parse(localStorage.getItem('zevoraDesigns')||'[]');$('savedList').innerHTML=a.length?'':'<p>No saved designs yet. Open a template and press Save.</p>';a.forEach((d,i)=>{let card=document.createElement('div');card.className='template';card.style.display='inline-block';card.style.width='190px';card.style.margin='8px';card.innerHTML=`<img src="${d.preview}" style="width:100%;height:130px;object-fit:contain;background:#eee;border-radius:8px"><b>${d.name}</b><small>${d.w} × ${d.h}</small><button style="margin-top:8px;width:100%">Open design</button>`;card.querySelector('button').onclick=()=>{objects=d.objects;bg=d.bg;canvas.width=d.w;canvas.height=d.h;designName=d.name;showEditor()};$('savedList').appendChild(card)})}
+function exportPNG(){if(!$('editorPage').style.display||$('editorPage').style.display==='none'){alert('Open a design first.');return}let was=selected;selected=-1;render();let a=document.createElement('a');a.download='zevora-design.png';a.href=canvas.toDataURL('image/png');a.click();selected=was;render()}
+showHome();
+</script></body></html>
